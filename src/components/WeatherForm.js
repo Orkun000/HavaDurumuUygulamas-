@@ -110,12 +110,12 @@ const WeatherForm = ({ onWeatherFetched, onTempFetched }) => {
           city: selectedCity,
         }));
         allWeatherData.push(formatted);
-        message.success(`${selectedCity} için hava durumu başarıyla yüklendi!`);
+        message.success(f("weatherFetchedSuccess"));
       }
       onWeatherFetched(allWeatherData);
     } catch (error) {
-      console.error("API isteği hatası:", error);
-      message.error("Hava durumu alınamadı. Lütfen tekrar deneyin.");
+      console.error(t("apiError"), error);
+      message.error(f("weatherFetchError"));
       onWeatherFetched([]);
     } finally {
       setLoading(false);

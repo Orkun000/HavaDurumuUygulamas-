@@ -27,8 +27,7 @@ const resources = {
       reset: "Sıfırla",
       close: "Kapat",
       time: "Saat",
-      noData: "Hava durumu verilerini görmek için ülke ve şehir seçiniz.",
-      noCoordinatesFound: "Seçilen şehir için koordinat bilgisi bulunamadı.",
+      apiError: "Api isteği hatası.",
       weatherFetchedSuccess: "{{city}} için hava durumu başarıyla yüklendi!",
       weatherFetchError: "Hava durumu alınamadı. Lütfen tekrar deneyin.",
 
@@ -75,8 +74,8 @@ const resources = {
       date: "Date",
       tempInput: "Enter Temperature:",
       time: "Time",
+      apiError: "Api request error.",
       noData: "Please select a country and city to see weather data.",
-      noCoordinatesFound: "Coordinates not found for the selected city.",
       weatherFetchedSuccess: "Weather data for {{city}} loaded successfully!",
       weatherFetchError: "Could not fetch weather data. Please try again.",
 
