@@ -143,11 +143,11 @@ const WeatherForm = ({ onWeatherFetched, onTempFetched }) => {
           <Form.Item
             label={t("country")}
             name="country"
-            rules={[{ required: true, message: t("required_country") }]}
+            rules={[{ required: true, message: t("requiredCountry") }]}
             key="country-form-item"
           >
             <Select
-              placeholder={t("select_country_placeholder")}
+              placeholder={t("selectCountry")}
               mode="multiple"
               onChange={handleCountryChange}
               size="small"
@@ -162,13 +162,13 @@ const WeatherForm = ({ onWeatherFetched, onTempFetched }) => {
           </Form.Item>
 
           <Form.Item
-            label={t("city_label")}
+            label={t("city")}
             name="city"
-            rules={[{ required: true, message: t("required_city") }]}
+            rules={[{ required: true, message: t("requiredCity") }]}
             key="city-form-item"
           >
             <Select
-              placeholder={t("select_city_placeholder")}
+              placeholder={t("selectCity")}
               mode="multiple"
               size="small"
               key="city-select"
@@ -185,7 +185,7 @@ const WeatherForm = ({ onWeatherFetched, onTempFetched }) => {
 
           <Form.Item key="submit-button-item">
             <Button type="primary" htmlType="submit" loading={loading}>
-              {t("search_button")}
+              {t("search")}
             </Button>
             <Button
               onClick={handleClear}
@@ -196,13 +196,13 @@ const WeatherForm = ({ onWeatherFetched, onTempFetched }) => {
                 marginLeft: 8,
               }}
             >
-              {t("clear_button")}
+              {t("clear")}
             </Button>
           </Form.Item>
         </Col>
         <Col span={2}></Col>
         <Col span={10}>
-          <Form.Item label={t("temp_input_label")} name="temperature">
+          <Form.Item label={t("tempInput")} name="temperature">
             <InputNumber style={{ width: "100%" }} />
           </Form.Item>
         </Col>

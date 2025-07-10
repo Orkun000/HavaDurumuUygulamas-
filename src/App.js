@@ -31,7 +31,7 @@ const App = () => {
           <Option value="en">English</Option>
         </Select>
       </div>
-      <Card title={t("country_selection_title")}>
+      <Card title={t("countrySelection")}>
         <WeatherForm
           onWeatherFetched={setWeatherData}
           onTempFetched={setFilteredTemp}
@@ -46,7 +46,7 @@ const App = () => {
           )}
         >
           {weatherData.map((dataItem, index) => (
-            <Panel header={t("weather_table_title")} key={index}>
+            <Panel header={t("weatherTable")} key={index}>
               <Card
                 style={{
                   border: "none",
