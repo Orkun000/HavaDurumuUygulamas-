@@ -5,6 +5,7 @@ import { initReactI18next } from "react-i18next";
 const resources = {
   tr: {
     translation: {
+      dateTime: "Tarih: {{datePart}} \nSaat: {{timePart}}",
       countrySelection: "Ülke ve Şehir Seçimi",
       weatherTable: "Hava Durumu Tablosu",
       country: "Ülke",
@@ -30,6 +31,8 @@ const resources = {
       apiError: "Api isteği hatası.",
       weatherFetchedSuccess: "{{city}} için hava durumu başarıyla yüklendi!",
       weatherFetchError: "Hava durumu alınamadı. Lütfen tekrar deneyin.",
+      turkish: "Türkçe",
+      english: "İngilizce",
 
       Türkiye: "Türkiye",
       Almanya: "Almanya",
@@ -78,6 +81,9 @@ const resources = {
       noData: "Please select a country and city to see weather data.",
       weatherFetchedSuccess: "Weather data for {{city}} loaded successfully!",
       weatherFetchError: "Could not fetch weather data. Please try again.",
+
+      turkish: "Turkish",
+      english: "English",
 
       Türkiye: "Turkey",
       Almanya: "Germany",

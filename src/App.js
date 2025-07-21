@@ -1,41 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import WeatherForm from "./components/WeatherForm";
-import WeatherTable from "./components/WeatherTable";
-import { Card, Select, Collapse, Divider, Col } from "antd";
+import WeatherList from "./components/WeatherList";
+import LanguageSelector from "./components/LanguageSelector";
+import { Card, Select, Collapse } from "antd";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
+import { observer } from "mobx-react-lite";
+import weatherStore from "./stores/WeatherStore";
 import "./i18n";
 
 const { Option } = Select;
 const { Panel } = Collapse;
-const App = () => {
-  const [weatherData, setWeatherData] = useState([]);
-  const [filteredTemp, setFilteredTemp] = useState([]);
+
+const App = observer(() => {
   const { t, i18n } = useTranslation();
+
+  const { weatherData, selectedCountries } = weatherStore;
 
   return (
     <div style={{ maxWidth: 700, margin: "50px auto" }}>
-      <div
-        style={{
-          marginBottom: 20,
-          display: "flex",
-          flexDirection: "row-reverse",
-        }}
-      >
-        <Select
-          defaultValue={i18n.language}
-          style={{ width: 120 }}
-          onChange={(lng) => i18n.changeLanguage(lng)}
-        >
-          <Option value="tr">Türkçe</Option>
-          <Option value="en">English</Option>
-        </Select>
-      </div>
+      <LanguageSelector />
+
       <Card title={t("countrySelection")}>
-        <WeatherForm
-          onWeatherFetched={setWeatherData}
-          onTempFetched={setFilteredTemp}
-        />
+        <WeatherForm />
       </Card>
 
       {!!weatherData.length && (
@@ -45,8 +32,8 @@ const App = () => {
             <CaretRightOutlined rotate={isActive ? 90 : 0} />
           )}
         >
-          {weatherData.map((dataItem, index) => (
-            <Panel header={t("weatherTable")} key={index}>
+          {selectedCountries.map((dataItem, index) => (
+            <Panel header={t("weatherTable")}>
               <Card
                 style={{
                   border: "none",
@@ -54,11 +41,7 @@ const App = () => {
                   background: "transparent",
                 }}
               >
-                <WeatherTable
-                  key={dataItem.id}
-                  data={dataItem}
-                  temp={filteredTemp}
-                />
+                <WeatherList />
               </Card>
             </Panel>
           ))}
@@ -66,6 +49,6 @@ const App = () => {
       )}
     </div>
   );
-};
+});
 
 export default App;

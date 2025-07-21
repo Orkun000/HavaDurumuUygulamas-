@@ -1,134 +1,44 @@
-import React, { useState, useEffect } from "react";
-import {
-  Form,
-  Button,
-  Select,
-  message,
-  Spin,
-  InputNumber,
-  Popover,
-  Col,
-  Row,
-} from "antd";
-import axios from "axios";
+import React, { useEffect } from "react";
+import { Form, Button, Select, message, InputNumber, Col, Row } from "antd";
 import { useTranslation } from "react-i18next";
-import FormItem from "antd/es/form/FormItem";
+import weatherStore from "../stores/WeatherStore";
+import { observer } from "mobx-react-lite";
 
 const { Option } = Select;
 
-const cityCoordinates = {
-  Türkiye: {
-    İstanbul: { latitude: 41.0082, longitude: 28.9784 },
-    İzmir: { latitude: 38.4192, longitude: 27.1287 },
-  },
-  Almanya: {
-    Berlin: { latitude: 52.52, longitude: 13.405 },
-    Hamburg: { latitude: 53.5511, longitude: 9.9937 },
-  },
-  Fransa: {
-    Paris: { latitude: 48.8566, longitude: 2.3522 },
-  },
-  Yunanistan: {
-    Atina: { latitude: 37.9838, longitude: 23.7275 },
-  },
-  İtalya: {
-    Roma: { latitude: 41.9028, longitude: 12.4964 },
-  },
-  İngiltere: {
-    Londra: { latitude: 51.5074, longitude: -0.1278 },
-  },
-  Portekiz: {
-    Lizbon: { latitude: 38.7169, longitude: -9.1399 },
-  },
-  İspanya: {
-    Madrid: { latitude: 40.4168, longitude: -3.7038 },
-  },
-};
-
-const WeatherForm = ({ onWeatherFetched, onTempFetched }) => {
-  const [availableCities, setAvailableCities] = useState([]);
-  const [loading, setLoading] = useState(false);
+const WeatherForm = observer(() => {
   const [form] = Form.useForm();
   const { t } = useTranslation();
-  const [selectedCountries, setSelectedCountries] = useState([]);
+
+  const {
+    selectedCountries,
+    availableCities,
+    loading,
+    cityCoordinates,
+    setSelectedCountries,
+    fetchWeatherData,
+    clearForm,
+  } = weatherStore;
 
   useEffect(() => {
-    const newCities = [];
-    selectedCountries.forEach((country) => {
-      const citiesOfThisCountry = Object.keys(cityCoordinates[country]); // lat long al
-      newCities.push(...citiesOfThisCountry);
+    form.setFieldsValue({
+      city: undefined,
+      temperature: undefined,
     });
-    setAvailableCities(newCities);
-    onWeatherFetched([]);
-  }, [selectedCountries]);
+  }, [selectedCountries, form]);
 
   const handleCountryChange = (countries) => {
     setSelectedCountries(countries);
+    form.setFieldsValue({ city: undefined, temperature: undefined });
   };
-  const content = (
-    <div>
-      <p>Content</p>
-      <p>Content</p>
-    </div>
-  );
 
   const onFinish = async (values) => {
-    console.log(values);
-    const { country, city, temperature } = values;
-    onTempFetched(temperature);
-
-    const allWeatherData = [];
-    const selectedCities = city;
-
-    setLoading(true);
-    try {
-      for (const selectedCity of selectedCities) {
-        let countryOfCity = null;
-        for (const countryKey in cityCoordinates) {
-          if (cityCoordinates[countryKey][selectedCity]) {
-            countryOfCity = countryKey;
-            break;
-          }
-        }
-        const { latitude, longitude } =
-          cityCoordinates[countryOfCity]?.[selectedCity];
-        const {
-          data: {
-            hourly: { time: times, temperature_2m: temps },
-          },
-        } = await axios.get("https://api.open-meteo.com/v1/forecast", {
-          params: {
-            latitude,
-            longitude,
-            hourly: "temperature_2m",
-          },
-        });
-
-        const formatted = times.map((time, index) => ({
-          time,
-          temperature: temps[index],
-          city: selectedCity,
-        }));
-        allWeatherData.push(formatted);
-        message.success(f("weatherFetchedSuccess"));
-      }
-      onWeatherFetched(allWeatherData);
-    } catch (error) {
-      console.error(t("apiError"), error);
-      message.error(f("weatherFetchError"));
-      onWeatherFetched([]);
-    } finally {
-      setLoading(false);
-    }
+    await fetchWeatherData(values, t);
   };
 
   const handleClear = () => {
     form.resetFields();
-    setAvailableCities([]);
-    setSelectedCountries([]);
-    onWeatherFetched([]);
-    onTempFetched(null);
-    message.info(t("formCleared"));
+    clearForm(t);
   };
 
   return (
@@ -144,14 +54,12 @@ const WeatherForm = ({ onWeatherFetched, onTempFetched }) => {
             label={t("country")}
             name="country"
             rules={[{ required: true, message: t("requiredCountry") }]}
-            key="country-form-item"
           >
             <Select
               placeholder={t("selectCountry")}
               mode="multiple"
               onChange={handleCountryChange}
               size="small"
-              key="country-select"
             >
               {Object.keys(cityCoordinates).map((country) => (
                 <Option value={country} key={country}>
@@ -165,15 +73,12 @@ const WeatherForm = ({ onWeatherFetched, onTempFetched }) => {
             label={t("city")}
             name="city"
             rules={[{ required: true, message: t("requiredCity") }]}
-            key="city-form-item"
           >
             <Select
               placeholder={t("selectCity")}
               mode="multiple"
               size="small"
-              key="city-select"
-              disabled={availableCities.length === 0}
-              option
+              disabled={!availableCities.length}
             >
               {availableCities.map((city) => (
                 <Option value={city} key={city}>
@@ -183,7 +88,7 @@ const WeatherForm = ({ onWeatherFetched, onTempFetched }) => {
             </Select>
           </Form.Item>
 
-          <Form.Item key="submit-button-item">
+          <Form.Item>
             <Button type="primary" htmlType="submit" loading={loading}>
               {t("search")}
             </Button>
@@ -209,6 +114,6 @@ const WeatherForm = ({ onWeatherFetched, onTempFetched }) => {
       </Row>
     </Form>
   );
-};
+});
 
 export default WeatherForm;
